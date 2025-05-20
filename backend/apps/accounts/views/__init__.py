@@ -1,1 +1,1 @@
-from .user import Home
+from .user import CreateUserView, ManageUserView
