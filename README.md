@@ -43,5 +43,22 @@ Create a friendly and creative space where authors can:
 
 ---
 
+## How to use
+### Backend (Django)
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # venv\Scripts\activate on Windows
+pip install -r requirements.txt
+python manage.py runserver
+```
+
+### Frontend (Next.js)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+---
 ### Author
 This is a personal initiative by Dmytro K. - a playground for creative and technical exploration, and possibly a future startup.
