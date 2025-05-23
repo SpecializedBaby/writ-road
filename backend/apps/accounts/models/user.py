@@ -1,6 +1,9 @@
+from enum import Enum
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 
 
@@ -36,7 +39,29 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
+class UserRole(Enum):
+    ADMIN = "admin"
+    CUSTOMER = "customer"
+    AUTHOR = "author"
+
+
 class User(AbstractUser):
+    profile_image = models.ImageField(
+        upload_to="avatars/",
+        null=True,
+        blank=True,
+        help_text=_("User profile picture.")
+    )
+    role = models.CharField(
+        max_length=12,
+        choices=[(role.value, role.name.capitalize()) for role in UserRole],
+        default=UserRole.CUSTOMER.value
+    )
+    is_verified = models.BooleanField(
+        default=False,
+        help_text=_("Designates whether the user has verified their email address.")
+    )
+
     username = None
     email = models.EmailField(_("email address"), unique=True)
 
@@ -45,5 +70,20 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+        indexes = [
+            models.Index(fields=["email"]),
+            models.Index(fields=["role"]),
+        ]
+        constraints = [
+            UniqueConstraint(fields=["email"], name="unique_user_email"),
+        ]
+
     def __str__(self):
         return self.email
+
+    @property
+    def is_author(self) -> bool:
+        return self.role == UserRole.AUTHOR.value

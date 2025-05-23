@@ -11,9 +11,9 @@
 /frontend/node_modules/
 /frontend/.env.local
 
-
 # Global
 .env
+/media/
 
 
 # Byte-compiled / optimized / DLL files
