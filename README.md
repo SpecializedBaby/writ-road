@@ -60,5 +60,34 @@ npm install
 npm run dev
 ```
 ---
+## This project contains a Dockerized monorepo architecture with:
+
+- 🐍 Django (backend with REST API)
+- 🐘 PostgreSQL (database)
+- ⚛️ Next.js (frontend with React)
+- 🖼️ Media file support via Django
+- 📦 Docker & docker-compose for local development
+
+### Build and start containers
+```bash
+docker-compose up --build
+```
+### Available services
+🛠 Backend (Django API): http://localhost:8000
+
+🎨 Frontend (Next.js): http://localhost:3000
+
+📸 Media files: served by Django at /media/
+
+### Media and Static Files
+/media/
+
+### Rebuild after changes
+```bash
+docker-compose down
+docker-compose up --build
+```
+---
+
 ### Author
 This is a personal initiative by Dmytro K. - a playground for creative and technical exploration, and possibly a future startup.
