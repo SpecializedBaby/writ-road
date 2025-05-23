@@ -9,6 +9,8 @@ import Image from "next/image"
 import { Eye, EyeOff, CheckCircle } from "lucide-react"
 import Button from "@/components/Button"
 
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function RegisterPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
@@ -79,25 +81,21 @@ export default function RegisterPage() {
     setIsSubmitting(true)
 
     try {
-      // This would be replaced with your actual API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     firstName: formData.firstName,
-      //     lastName: formData.lastName,
-      //     email: formData.email,
-      //     password: formData.password
-      //   })
-      // });
+      const response = await fetch(`${apiUrl}/account/create/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password
+        })
+      });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || 'Registration failed');
-      // }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
 
       setRegistrationSuccess(true)
 

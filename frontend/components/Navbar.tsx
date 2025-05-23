@@ -7,6 +7,7 @@ import { Search, Menu, X, ChevronDown } from "lucide-react"
 import { NAV_LINKS } from "../constants"
 import Button from "./Button"
 
+
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -77,10 +78,10 @@ export default function Navbar() {
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#212832]" size={18} />
           </div>
 
-          <Link href="#" className="text-[#212832] hover:text-[#f26336]">
+          <Link href="/auth/login/" className="text-[#212832] hover:text-[#f26336]">
             Sign In
           </Link>
-          <Button href="#" variant="outline">
+          <Button href="/auth/register/" variant="outline">
             Sign up
           </Button>
           <div
@@ -184,10 +185,10 @@ export default function Navbar() {
               ))}
             </nav>
             <div className="flex flex-col gap-3">
-              <Link href="#" className="text-[#212832] hover:text-[#f26336] font-medium">
+              <Link href="/auth/login/" className="text-[#212832] hover:text-[#f26336] font-medium">
                 Sign In
               </Link>
-              <Button href="#" variant="outline" className="w-full">
+              <Button href="/auth/register/" variant="outline" className="w-full">
                 Sign up
               </Button>
             </div>

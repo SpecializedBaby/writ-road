@@ -11,6 +11,8 @@ import { Eye, EyeOff, ArrowRight } from "lucide-react"
 
 import Button from "@/components/Button"
 
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function LoginPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
@@ -67,8 +69,7 @@ export default function LoginPage() {
     setIsSubmitting(true)
 
     try {
-      // This would be replaced with your actual API call
-      const response = await fetch('http://localhost:8000/api/account/token/', {
+      const response = await fetch(`${apiUrl}/account/token/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
