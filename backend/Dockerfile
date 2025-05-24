@@ -1,18 +1,22 @@
-FROM python:3.11
-
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+FROM python:3.11-alpine3.21
+LABEL maintainer="specialized8393@gmail.com"
 
 WORKDIR /app
 
-COPY . /app
-RUN pip install --upgrade pip
+ENV PYTHONUNBUFFERED 1
+
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-# Create media folder
-RUN mkdir -p /app/media
+COPY . .
+RUN mkdir -p /files/media
 
-COPY wait_for_db.sh /wait_for_db.sh
-ENTRYPOINT ["/wait_for_db.sh"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN adduser \
+    --disabled-password \
+    --no-create-home \
+    my_user
+
+RUN chown -R my_user /files/media
+RUN chmod -R 755 /files/media
+
+USER my_user
