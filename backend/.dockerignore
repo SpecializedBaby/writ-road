@@ -1,0 +1,21 @@
+# Do NOT include Python cache or virtual env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+*.pot
+*.mo
+
+# Virtual environment
+venv
+env
+ENV
+
+# IDE/editor stuff
+.idea
+.vscode
+
+# OS junk
+.DS_Store

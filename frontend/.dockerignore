@@ -1,0 +1,12 @@
+# Do NOT include node_modules and build cache
+node_modules
+.next
+out
+dist
+
+# IDE/editor stuff
+.idea
+.vscode
+
+# OS junk
+.DS_Store
