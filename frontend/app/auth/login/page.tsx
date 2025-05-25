@@ -7,6 +7,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Eye, EyeOff, ArrowRight } from "lucide-react"
+import { useAuth } from "@/context/AuthContext"
 
 
 import Button from "@/components/Button"
@@ -84,12 +85,29 @@ export default function LoginPage() {
         throw new Error(errorData.message || 'Login failed');
       }
 
+      const { login } = useAuth()
+
       const data = await response.json();
       // data = { access: '...', refresh: '...' }
 
       // Сохраняем токены, например, в localStorage
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
+
+      const profileResponse = await fetch(`${apiUrl}/account/me/`, {
+        headers: {
+          Authorization: `Bearer ${data.access}`,
+        },
+      })
+
+      if (!profileResponse.ok) {
+        throw new Error("Failed to fetch user profile")
+      }
+
+      const userProfile = await profileResponse.json()
+
+
+      login(userProfile)
 
       // Redirect to home page or dashboard
       router.push("/")
