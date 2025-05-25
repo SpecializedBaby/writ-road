@@ -25,7 +25,7 @@ services:
     env_file:
       - .env
     volumes:
-      - my_db:$PGDATA
+      - my_db:/var/lib/postgresql/data
 
   ui:
     build:
@@ -33,7 +33,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/:/app
+      - ./frontend:/app
+#      - ./frontend/public/:/app/public # Only persist the uploads folder
     command: >
       sh -c "npm run dev"
     env_file:

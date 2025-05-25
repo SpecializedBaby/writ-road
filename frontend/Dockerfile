@@ -3,6 +3,8 @@ LABEL maintainer="specialized8393@gmail.com"
 
 WORKDIR /app
 
+ENV NODE_ENV=development
+
 COPY . .
 RUN npm install
 
