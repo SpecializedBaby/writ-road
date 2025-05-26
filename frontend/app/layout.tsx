@@ -1,12 +1,9 @@
-"use client"
-
-// import type { Metadata } from "next";
-
+import type { Metadata } from "next";
+import type React from "react"
 import { Archivo, Manrope, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { AuthProvider } from "@/context/AuthContext"
+
+import { AuthProvider } from "@/contexts/AuthContext"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,27 +21,41 @@ const manropeSans = Manrope({
   subsets: ["latin"],
 });
 
-// export const metadata: Metadata = {
-//   title: "FieryTrips - authors trips",
-//   description: "We are a company of young enthusiasts in love with the road, organizing tours for like-minded people.",
-// };
+export const metadata: Metadata = {
+  title: "FieryTrips - authors trips",
+  description: "We are a company of young enthusiasts in love with the road, organizing tours for like-minded people.",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AuthProvider>
-          <Navbar />
-          <main className={`${poppins.variable} font-sans`}>
-            {children}
-          </main>
-          <Footer />
-        </AuthProvider>
+      <body className={`${poppins.variable} font-sans`}>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
-  );
+  )
 }
+
+// export default function RootLayout({
+//   children,
+// }: Readonly<{
+//   children: React.ReactNode;
+// }>) {
+//   return (
+//     <html lang="en">
+//       <body>
+//         <AuthProvider>
+//           <Navbar />
+//           <main className={`${poppins.variable} font-sans`}>
+//             {children}
+//           </main>
+//           <Footer />
+//         </AuthProvider>
+//       </body>
+//     </html>
+//   );
+// }
