@@ -5,22 +5,10 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { User, Settings, LogOut, CreditCard, MapPin, Calendar, Clock, ChevronRight } from "lucide-react"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 import Button from "@/components/Button"
-
-// This would normally come from your auth context or API
-const getUserProfile = () => {
-  // Mock data for demonstration
-  return {
-    id: "user123",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    profileImage: "/placeholder.svg?height=200&width=200",
-    joinedDate: "January 2023",
-    upcomingTrips: 2,
-    completedTrips: 5,
-  }
-}
+import { useAuth } from "@/contexts/AuthContext"
 
 // This would normally come from your API
 const getUserBookings = () => {
@@ -86,7 +74,7 @@ const formatDate = (dateString: string) => {
 
 export default function AccountPage() {
   const router = useRouter()
-  const user = getUserProfile()
+  const { user, logout, isLoading } = useAuth()
   const bookings = getUserBookings()
   const upcomingBookings = bookings.filter((booking) => booking.status === "upcoming")
   const completedBookings = bookings.filter((booking) => booking.status === "completed")
@@ -94,18 +82,21 @@ export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<"upcoming" | "completed">("upcoming")
 
   const handleLogout = async () => {
-    // This would be replaced with your actual logout logic
-    // await fetch('/api/auth/logout', { method: 'POST' });
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    // Redirect to home page
+    await logout()
     router.push("/")
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (!user) {
+    return <div>Not authenticated</div>
   }
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Navbar />
       <div className="flex-grow py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
@@ -116,17 +107,17 @@ export default function AccountPage() {
                   <div className="flex flex-col items-center text-center mb-6">
                     <div className="w-24 h-24 rounded-full overflow-hidden mb-4">
                       <Image
-                        src={user.profileImage || "/placeholder.svg"}
-                        alt={`${user.firstName} ${user.lastName}`}
+                        src={user.profile_image || "/placeholder.svg"}
+                        alt={`${user.first_name} ${user.last_name}`}
                         width={96}
                         height={96}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <h1 className="text-xl font-bold text-[#14183E]">
-                      {user.firstName} {user.lastName}
+                      {user.first_name} {user.last_name}
                     </h1>
-                    <p className="text-[#5E6282] text-sm">Member since {user.joinedDate}</p>
+                    <p className="text-[#5E6282] text-sm">Member since {formatDate(user.date_joined)}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-6">
@@ -343,6 +334,7 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

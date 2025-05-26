@@ -7,12 +7,14 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Eye, EyeOff, CheckCircle } from "lucide-react"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 import Button from "@/components/Button"
-
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { register } = useAuth() // Moved useAuth hook to the top level
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -81,21 +83,12 @@ export default function RegisterPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`${apiUrl}/account/create/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
-      }
+      await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      })
 
       setRegistrationSuccess(true)
 
@@ -116,6 +109,7 @@ export default function RegisterPage() {
   if (registrationSuccess) {
     return (
       <div className="min-h-screen flex flex-col">
+        <Navbar />
         <div className="flex-grow flex items-center justify-center py-20">
           <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full">
             <div className="text-center">
@@ -134,12 +128,14 @@ export default function RegisterPage() {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Navbar />
       <div className="flex-grow flex items-center justify-center py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
@@ -327,6 +323,7 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
