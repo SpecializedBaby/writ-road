@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-
+import type React from "react"
 import { Archivo, Manrope, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
+import { AuthProvider } from "@/contexts/AuthContext"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,17 +29,33 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body>
-        <Navbar/>
-        <main className={`${poppins.variable} font-sans`}>
-          {children}
-        </main>
-        <Footer/>
+      <body className={`${poppins.variable} font-sans`}>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
-  );
+  )
 }
+
+// export default function RootLayout({
+//   children,
+// }: Readonly<{
+//   children: React.ReactNode;
+// }>) {
+//   return (
+//     <html lang="en">
+//       <body>
+//         <AuthProvider>
+//           <Navbar />
+//           <main className={`${poppins.variable} font-sans`}>
+//             {children}
+//           </main>
+//           <Footer />
+//         </AuthProvider>
+//       </body>
+//     </html>
+//   );
+// }

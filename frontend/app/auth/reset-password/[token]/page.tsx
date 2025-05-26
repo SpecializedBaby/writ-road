@@ -64,28 +64,25 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
 
     try {
       // This would be replaced with your actual API call
-      // const response = await fetch('/api/auth/reset-password', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     token,
-      //     password: formData.password
-      //   })
-      // });
+      const response = await fetch('/account/me/', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token,
+          password: formData.password
+        })
+      });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || 'Password reset failed');
-      // }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Password reset failed');
+      }
 
       setResetSuccess(true)
 
       // Redirect to login after 3 seconds
       setTimeout(() => {
-        router.push("/auth/login")
+        router.push("/account/")
       }, 3000)
     } catch (error) {
       console.error("Password reset error:", error)

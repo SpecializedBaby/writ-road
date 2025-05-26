@@ -7,14 +7,14 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Eye, EyeOff, ArrowRight } from "lucide-react"
-
-
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 import Button from "@/components/Button"
-
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login } = useAuth() // Moved useAuth hook to the top level
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -69,27 +69,7 @@ export default function LoginPage() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch(`${apiUrl}/account/token/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          // rememberMe: formData.rememberMe
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-      }
-
-      const data = await response.json();
-      // data = { access: '...', refresh: '...' }
-
-      // Сохраняем токены, например, в localStorage
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
+      await login(formData.email, formData.password, formData.rememberMe)
 
       // Redirect to home page or dashboard
       router.push("/")
@@ -105,6 +85,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Navbar />
       <div className="flex-grow flex items-center justify-center py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
@@ -224,6 +205,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

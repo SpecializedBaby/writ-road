@@ -7,41 +7,27 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Upload, X, CheckCircle } from "lucide-react"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 import Button from "@/components/Button"
-
-// This would normally come from your auth context or API
-const getUserProfile = () => {
-  // Mock data for demonstration
-  return {
-    id: "user123",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    address: "123 Main St",
-    city: "New York",
-    country: "United States",
-    profileImage: "/placeholder.svg?height=200&width=200",
-    bio: "Passionate traveler with a love for adventure and exploring new cultures.",
-  }
-}
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function EditProfilePage() {
   const router = useRouter()
-  const userProfile = getUserProfile()
+  const { user, updateUser, isLoading } = useAuth()
 
   const [formData, setFormData] = useState({
-    firstName: userProfile.firstName,
-    lastName: userProfile.lastName,
-    email: userProfile.email,
-    phone: userProfile.phone || "",
-    address: userProfile.address || "",
-    city: userProfile.city || "",
-    country: userProfile.country || "",
-    bio: userProfile.bio || "",
+    firstName: user?.first_name || "",
+    lastName: user?.last_name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    address: user?.address || "",
+    city: user?.city || "",
+    country: user?.country || "",
+    bio: user?.bio || "",
   })
 
-  const [profileImage, setProfileImage] = useState<string | null>(userProfile.profileImage)
+  const [profileImage, setProfileImage] = useState<string | null>(user?.profile_image || null)
   const [newProfileImage, setNewProfileImage] = useState<File | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -106,28 +92,11 @@ export default function EditProfilePage() {
     setIsSubmitting(true)
 
     try {
-      // This would be replaced with your actual API call
-      // const formDataToSend = new FormData();
-      // Object.entries(formData).forEach(([key, value]) => {
-      //   formDataToSend.append(key, value);
-      // });
-      //
-      // if (newProfileImage) {
-      //   formDataToSend.append('profileImage', newProfileImage);
-      // }
-      //
-      // const response = await fetch('/api/account/profile', {
-      //   method: 'PUT',
-      //   body: formDataToSend
-      // });
+      if (!user) {
+        throw new  Error("User not authenticated")
+      }
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || 'Failed to update profile');
-      // }
+      await updateUser(formData)
 
       setUpdateSuccess(true)
 
@@ -147,6 +116,7 @@ export default function EditProfilePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Navbar/>
       <div className="flex-grow py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
@@ -389,6 +359,7 @@ export default function EditProfilePage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
