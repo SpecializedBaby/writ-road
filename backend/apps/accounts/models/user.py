@@ -57,7 +57,7 @@ class User(AbstractUser):
         choices=[(role.value, role.name.capitalize()) for role in UserRole],
         default=UserRole.CUSTOMER.value
     )
-    is_verified = models.BooleanField(
+    is_active = models.BooleanField(
         default=False,
         help_text=_("Designates whether the user has verified their email address.")
     )

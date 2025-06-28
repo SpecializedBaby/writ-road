@@ -12,6 +12,10 @@ class Author(models.Model):
         related_name="author",
         help_text=_("The user associated with this author profile.")
     )
+    is_verified = models.BooleanField(
+        default=False,
+        help_text=_("Verification status")
+    )
     profession = models.CharField(
         max_length=100,
         blank=True,
@@ -40,7 +44,7 @@ class Author(models.Model):
         blank=True,
         help_text=_("List of languages the author is proficient in (e.g., ['English', 'Spanish']).")
     )
-    specialties = models.JSONField(
+    speciality = models.JSONField(
         default=list,
         blank=True,
         help_text=_("List of writing/travel specialties (e.g., ['Adventure Travel', 'Historical Fiction']).")
@@ -64,4 +68,3 @@ class Author(models.Model):
         if self.user.role != UserRole.AUTHOR.value:
             self.user.role = UserRole.AUTHOR.value
         super().save(*args, **kwargs)
-
