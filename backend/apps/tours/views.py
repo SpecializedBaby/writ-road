@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,13 +7,13 @@ from apps.tours.serializers import CountrySerializer
 from apps.tours.models import Country
 
 
-@api_view(["GET", "POST"])
-def country_list(request):
-    if request.method == "GET":
+class CountryList(APIView):
+    def get(self, request):
         countries = Country.objects.all()
         serializer = CountrySerializer(countries, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    else:
+
+    def post(self, request):
         serializer = CountrySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -22,20 +21,22 @@ def country_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Create your views here.
-@api_view(["GET", "PUT", "DELETE"])
-def country_detail(request, pk):
-    country = get_object_or_404(Country, pk=pk)
-    if request.method == "GET":
-        serializer = CountrySerializer(country)
+class CountryDetail(APIView):
+    def get_object(self, pk: int):
+        return get_object_or_404(Country, pk=pk)
+
+    def get(self, request, pk) -> Response:
+        serializer = CountrySerializer(self.get_object(pk=pk))
         return Response(serializer.data, status=status.HTTP_200_OK)
-    elif request.method == "PUT":
-        serializer = CountrySerializer(country, data=request.data)
+
+    def put(self, request, pk) -> Response:
+        serializer = CountrySerializer(self.get_object(pk=pk), data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    else:
+
+    def delete(self, request, pk):
+        country = self.get_object(pk=pk)
         country.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
