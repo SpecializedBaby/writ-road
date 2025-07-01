@@ -17,7 +17,7 @@ class Status(Enum):
 class Country(models.Model):
     name = models.CharField(max_length=50)
     iso_code = models.CharField(
-        max_length=2,
+        max_length=3,
         help_text=_("ISO 3166-1 A2 CODE of country")
     )
     continent = models.CharField(max_length=50, blank=True)
