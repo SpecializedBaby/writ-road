@@ -30,23 +30,32 @@ class Country(models.Model):
         help_text=_("Best month to visit this country.")
     )
 
+    class Meta:
+        verbose_name_plural = "countries"
+
+    def __str__(self):
+        return f"Country: {self.name} - (id: {self.id})"
+
 
 class Destination(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    tour = models.ForeignKey("Tour", on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default=country.name)
     is_popular = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Country: {self.name} - (id: {self.id})"
 
 
 class Tour(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
     tourist = models.ManyToManyField(get_user_model())
-    destination = models.ManyToManyField(Destination)
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=60, unique=True, blank=True)
     description = models.TextField()
     max_participants = models.PositiveIntegerField()
     difficulty_level = models.CharField(max_length=30, blank=True)
-    price = models.DecimalField(max_digits=3, decimal_places=2)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
     status = models.CharField(
         max_length=12,
         choices=[(status.value, status.name.capitalize()) for status in Status],
@@ -64,14 +73,22 @@ class Tour(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"Country: {self.title} - (id: {self.id})"
+
 
 class Date(models.Model):
+    tour = models.ForeignKey(Tour, related_name="tours", on_delete=models.CASCADE)
     start_date = models.DateField(help_text=_("A date in YYYY-MM-DD format."))
     end_date = models.DateField(help_text=_("A date in YYYY-MM-DD format."))
     available_spots = models.PositiveIntegerField()
-    price_adjustment = models.DecimalField(max_digits=3, decimal_places=2)
+    price_adjustment = models.DecimalField(max_digits=6, decimal_places=2)
     status = models.CharField(
         max_length=12,
         choices=[(status.value, status.name.capitalize()) for status in Status],
         default=Status.Available.value
     )
+
+    @property
+    def booked(self) -> int:
+        return self.available_spots - self.tour.tourist.count()
