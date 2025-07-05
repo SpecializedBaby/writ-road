@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.tours',
     'apps.booking',
-    'django_extensions'
+    'django_extensions',  # this is for django shell debug
+    'imagekit'
 ]
 
 REST_FRAMEWORK = {
