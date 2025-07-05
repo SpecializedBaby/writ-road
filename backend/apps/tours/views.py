@@ -4,12 +4,16 @@ from rest_framework import status, generics, mixins
 from rest_framework.response import Response
 
 from apps.tours.serializers import CountrySerializer
-from apps.tours.models import Country
+from apps.tours.models.tour import Country
 
 
 class CountryList(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
     queryset = Country.objects.all()
-    serializer_class = CountrySerializer
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CountrySerializer
+        return CountrySerializer
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

@@ -1,6 +1,27 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
-from apps.tours.models import Country, Destination, Tour, Date
+from apps.tours.models.tour import Destination, Tour, Date, Country
+from apps.tours.models.media import Photo
+
+
+class PhotoInline(admin.TabularInline):
+    model = Photo
+    extra = 1
+    fields = ('photo', 'type', 'caption')
+    readonly_fields = ('photo_preview', )
+
+    def photo_preview(self, obj):
+        if obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" style="max-height: 100px;" />')
+        return "No Photos"
+    photo_preview.allow_tags = True
+    photo_preview.short_description = "Preview"
+
+
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
+    model = Country
 
 
 class DestinationInline(admin.TabularInline):
@@ -15,4 +36,4 @@ class DateInline(admin.TabularInline):
 
 @admin.register(Tour)
 class TourAdmin(admin.ModelAdmin):
-    inlines = (DateInline, DestinationInline, )
+    inlines = (DestinationInline, PhotoInline, DateInline, )

@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from enum import Enum
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -15,9 +16,10 @@ class Status(Enum):
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     iso_code = models.CharField(
         max_length=3,
+        unique=True,
         help_text=_("ISO 3166-1 A2 CODE of country")
     )
     continent = models.CharField(max_length=50, blank=True)
@@ -38,8 +40,8 @@ class Country(models.Model):
 
 
 class Destination(models.Model):
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    tour = models.ForeignKey("Tour", on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, related_name="destinations", on_delete=models.CASCADE)
+    tour = models.ForeignKey("Tour", related_name="destinations", on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default=country.name)
     is_popular = models.BooleanField(default=False)
 
@@ -48,13 +50,13 @@ class Destination(models.Model):
 
 
 class Tour(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    tourist = models.ManyToManyField(get_user_model())
+    author = models.ForeignKey(Author, related_name="tours", on_delete=models.CASCADE)
+    tourist = models.ManyToManyField(get_user_model(), blank=True)  # tour_set from User model
+    difficulty_level = models.CharField(max_length=60)
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=60, unique=True, blank=True)
+    slug = models.SlugField(max_length=60, unique=True)  # read only field
     description = models.TextField()
     max_participants = models.PositiveIntegerField()
-    difficulty_level = models.CharField(max_length=30, blank=True)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     status = models.CharField(
         max_length=12,
@@ -78,10 +80,9 @@ class Tour(models.Model):
 
 
 class Date(models.Model):
-    tour = models.ForeignKey(Tour, related_name="tours", on_delete=models.CASCADE)
+    tour = models.ForeignKey(Tour, related_name="dates", on_delete=models.CASCADE)
     start_date = models.DateField(help_text=_("A date in YYYY-MM-DD format."))
     end_date = models.DateField(help_text=_("A date in YYYY-MM-DD format."))
-    available_spots = models.PositiveIntegerField()
     price_adjustment = models.DecimalField(max_digits=6, decimal_places=2)
     status = models.CharField(
         max_length=12,
@@ -89,6 +90,17 @@ class Date(models.Model):
         default=Status.Available.value
     )
 
+    def __str__(self):
+        return f"Tour id:{self.tour.id} from {self.start_date} to {self.end_date}"
+
     @property
-    def booked(self) -> int:
-        return self.available_spots - self.tour.tourist.count()
+    def participants_count(self) -> int:
+        return self.bookings.filter(status="confirmed").aggregate(count=Sum("num_people"))["count"] or 0
+
+    @property
+    def list_participants(self) -> list:
+        return [{booking.user: booking.num_people} for booking in self.bookings.all()]
+
+    @property
+    def available_spots(self) -> int:
+        return self.tour.max_participants - self.bookings.aggregate(total=Sum("num_people"))["total"]
