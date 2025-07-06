@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
-from imagekit.models import ImageSpecField
+from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 from apps.accounts.models.author import Author
@@ -34,6 +34,11 @@ class Country(models.Model):
         blank=True,
         help_text=_("Best month to visit this country.")
     )
+    image_hero = ProcessedImageField(
+        upload_to='countries',
+        processors=[ResizeToFill(1200, 500)],
+        format='JPEG',
+        options={'quality': 60})
     image = models.ImageField(upload_to="countries/")
     image_list = ImageSpecField(
         source="image",
@@ -43,9 +48,9 @@ class Country(models.Model):
     )
     image_detail = ImageSpecField(
         source="image",
-        processors=[ResizeToFill(1200, 500)],
+        processors=[ResizeToFill(400, 300)],
         format='JPEG',
-        options={'quality': 80}
+        options={'quality': 60}
     )
 
     class Meta:
