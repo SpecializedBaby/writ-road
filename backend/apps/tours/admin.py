@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from apps.tours.models.tour import Destination, Tour, Date, Country
+from apps.tours.models.tour import Destination, Tour
+from apps.tours.models.date import Date
 from apps.tours.models.media import Photo
+from apps.tours.models.country import Country
 
 
 class PhotoInline(admin.TabularInline):

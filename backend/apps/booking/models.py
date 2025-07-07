@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from apps.tours.models.tour import Date
+from apps.tours.models.date import Date
 
 
 class Booking(models.Model):
