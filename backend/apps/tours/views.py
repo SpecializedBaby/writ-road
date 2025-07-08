@@ -3,7 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework import status, generics, mixins
 from rest_framework.response import Response
 
-from apps.tours.serializers import CountryListSerializer, CountryDetailSerializer
+from apps.tours.serializers.country import CountryListSerializer, CountryDetailSerializer
 from apps.tours.models.country import Country
 
 

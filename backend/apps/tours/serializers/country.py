@@ -37,7 +37,7 @@ class CountryDetailSerializer(CountryListSerializer):
             "name",
             "image_hero",
             "image_featured",
-            "destination_count",
+            "tour_count",
             "capital",
             "language",
             "currency",
