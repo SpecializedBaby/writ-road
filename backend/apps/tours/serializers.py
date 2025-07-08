@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import serializers
 
 from apps.tours.models.country import Country
@@ -5,11 +6,11 @@ from apps.tours.models.country import Country
 
 class CountryListSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
-    destination_count = serializers.SerializerMethodField()
+    tour_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Country
-        fields = ["id", "name", "image", "destination_count"]
+        fields = ["id", "name", "image", "tour_count"]
 
     @staticmethod
     def get_image(obj):
@@ -18,9 +19,9 @@ class CountryListSerializer(serializers.ModelSerializer):
         return None
 
     @staticmethod
-    def get_destination_count(obj):
+    def get_tour_count(obj) -> int | None:
         if obj:
-            return obj.destinations.count()
+            return obj.destinations.aggregate(Count("tour", distinct=True))["tour__count"]
         return None
 
 

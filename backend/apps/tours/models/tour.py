@@ -20,7 +20,7 @@ class Tour(models.Model):
     tourist = models.ManyToManyField(get_user_model(), blank=True)  # tour_set from User model
     difficulty_level = models.CharField(max_length=60)
     title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=60, unique=True)  # read only field
+    slug = models.SlugField(max_length=60, unique=True, blank=True)  # read only field
     description = models.TextField()
     max_participants = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
