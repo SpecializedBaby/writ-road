@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
             name='Photo',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('photo', models.ImageField(upload_to=apps.tours.models.media.image_upload_path)),
+                ('photo', models.ImageField(upload_to=apps.tours.models.tour.image_upload_path)),
                 ('type', models.CharField(choices=[('main', 'Main Photo(1)'), ('gallery', 'Gallery(5)'), ('slide', 'Slide(n)')], max_length=7)),
                 ('caption', models.CharField(blank=True, max_length=100, verbose_name='Caption')),
                 ('tour', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='photos', to='tours.tour')),

@@ -14,9 +14,4 @@ class Migration(migrations.Migration):
             model_name='tour',
             name='country',
         ),
-        migrations.AlterField(
-            model_name='tour',
-            name='slug',
-            field=models.SlugField(max_length=60, unique=True),
-        ),
     ]

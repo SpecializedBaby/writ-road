@@ -11,3 +11,11 @@ class AuthorSerializer(serializers.ModelSerializer):
             'social_media', 'created_at', 'updated_at'
         )
         read_only_fields = ('user', 'rating', 'review_count', 'created_at', 'updated_at', )
+
+
+class AuthorInCardTourSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(source="user.profile_image")
+
+    class Meta:
+        model = Author
+        field = ["id", "name", "avatar"]

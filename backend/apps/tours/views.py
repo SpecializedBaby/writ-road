@@ -3,8 +3,10 @@ from rest_framework.generics import get_object_or_404
 from rest_framework import status, generics, mixins
 from rest_framework.response import Response
 
+from apps.tours.models.tour import Tour
 from apps.tours.serializers.country import CountryListSerializer, CountryDetailSerializer
 from apps.tours.models.country import Country
+from apps.tours.serializers.tour import TourListSerializer
 
 
 class CountryList(generics.GenericAPIView, mixins.ListModelMixin):
@@ -29,3 +31,11 @@ class CountryDetail(
 
     def get(self, request, *args, **kwargs) -> Response:
         return self.retrieve(request, *args, **kwargs)
+
+
+class TourListView(generics.GenericAPIView, mixins.ListModelMixin):
+    queryset = Tour.objects.all()
+    serializer_class = TourListSerializer
+
+    def get(self, request, *args, **kwargs) -> Response:
+        return self.list(request, *args, **kwargs)
