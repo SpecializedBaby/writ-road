@@ -6,6 +6,11 @@ from apps.accounts.models.user import UserRole
 
 
 class Author(models.Model):
+    direct_contact = models.CharField(
+        max_length=420,
+        help_text=_("The Author contact Ex: Whatsapp, TG or any direct link")
+    )
+    phone_number = models.CharField(max_length=60)
     user = models.OneToOneField(
         get_user_model(),
         on_delete=models.CASCADE,

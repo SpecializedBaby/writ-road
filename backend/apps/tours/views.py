@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from apps.tours.models.tour import Tour
 from apps.tours.serializers.country import CountryListSerializer, CountryDetailSerializer
 from apps.tours.models.country import Country
-from apps.tours.serializers.tour import TourListSerializer
+from apps.tours.serializers.tour import TourListSerializer, TourDetailSerializer
 
 
 class CountryList(generics.GenericAPIView, mixins.ListModelMixin):
@@ -39,3 +39,10 @@ class TourListView(generics.GenericAPIView, mixins.ListModelMixin):
 
     def get(self, request, *args, **kwargs) -> Response:
         return self.list(request, *args, **kwargs)
+
+class TourDetailView(generics.GenericAPIView, mixins.RetrieveModelMixin):
+    queryset = Tour.objects.all()
+    serializer_class = TourDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
