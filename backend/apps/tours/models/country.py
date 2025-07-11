@@ -15,13 +15,22 @@ def image_upload_path(instance, filename) -> str:
 
 
 class Country(models.Model):
+    CONTINENTS = [
+        ("europe", "Europe"),
+        ("asia", "Asia"),
+        ("north_america", "North America"),
+        ("south_america", "South America"),
+        ("africa", "Africa"),
+        ("oceania", "Oceania"),
+    ]
+
     name = models.CharField(max_length=50, unique=True)
     iso_code = models.CharField(
         max_length=3,
         unique=True,
         help_text=_("ISO 3166-1 A2 CODE of country")
     )
-    continent = models.CharField(max_length=50, blank=True)
+    continent = models.CharField(max_length=20, choices=CONTINENTS)
     capital = models.CharField(max_length=50, blank=True)
     currency = models.CharField(max_length=3, blank=True)
     language = models.CharField(max_length=15, blank=True)
@@ -30,6 +39,7 @@ class Country(models.Model):
         blank=True,
         help_text=_("Best month to visit this country.")
     )
+
     image_hero = ProcessedImageField(
         upload_to=image_upload_path,
         processors=[ResizeToFill(1200, 500)],

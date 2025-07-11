@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models.author import Author
-from apps.tours.models.country import Country
+from apps.tours.models.destination import Destination
 
 
 class Status(Enum):
@@ -17,6 +17,7 @@ class Status(Enum):
 
 
 class Tour(models.Model):
+    destinations = models.ManyToManyField(Destination, related_name="tours")
     author = models.ForeignKey(Author, related_name="tours", on_delete=models.CASCADE)
     tourist = models.ManyToManyField(get_user_model(), blank=True)  # tour_set from User model
     difficulty_level = models.CharField(max_length=60)
@@ -44,16 +45,6 @@ class Tour(models.Model):
 
     def __str__(self):
         return f"Country: {self.title} - (id: {self.id})"
-
-
-class Destination(models.Model):
-    country = models.ForeignKey(Country, related_name="destinations", on_delete=models.CASCADE)
-    tour = models.ForeignKey(Tour, related_name="destinations", on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, default=country.name)
-    is_popular = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Destination: {self.name} - (Tour: {self.tour.title})"
 
 
 def image_upload_path(instance, filename):

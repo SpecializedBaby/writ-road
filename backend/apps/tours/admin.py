@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from apps.tours.models.tour import Destination, Tour, Photo
+from apps.tours.models.tour import Tour, Photo
 from apps.tours.models.date import Date
 from apps.tours.models.country import Country
+from apps.tours.models.destination import Destination
 
 
 class PhotoInline(admin.TabularInline):
@@ -25,11 +26,6 @@ class CountryAdmin(admin.ModelAdmin):
     model = Country
 
 
-class DestinationInline(admin.TabularInline):
-    model = Destination
-    extra = 1
-
-
 class DateInline(admin.TabularInline):
     model = Date
     extra = 1
@@ -37,4 +33,5 @@ class DateInline(admin.TabularInline):
 
 @admin.register(Tour)
 class TourAdmin(admin.ModelAdmin):
-    inlines = (DestinationInline, PhotoInline, DateInline, )
+    filter_horizontal = ("destinations", )
+    inlines = (PhotoInline, DateInline, )
