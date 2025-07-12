@@ -41,7 +41,6 @@ class CountryDetailSerializer(CountryListSerializer):
             "capital",
             "language",
             "currency",
-            "best_time_to_visit",
             "popular_destinations"
         ]
 

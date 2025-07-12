@@ -8,7 +8,7 @@ from imagekit.processors import ResizeToFill
 
 def image_upload_path(instance, filename) -> str:
     if not isinstance(instance, Country):
-        raise ValueError("this func works only with instance TripPhoto")
+        raise ValueError("this func works only with instance Country")
 
     timestamp = timezone.now().strftime('%Y-%m-%d')
     return f"countries/{instance.name}/{timestamp}_{filename}"
@@ -34,12 +34,6 @@ class Country(models.Model):
     capital = models.CharField(max_length=50, blank=True)
     currency = models.CharField(max_length=3, blank=True)
     language = models.CharField(max_length=15, blank=True)
-    best_time_to_visit = models.CharField(
-        max_length=10,
-        blank=True,
-        help_text=_("Best month to visit this country.")
-    )
-
     image_hero = ProcessedImageField(
         upload_to=image_upload_path,
         processors=[ResizeToFill(1200, 500)],

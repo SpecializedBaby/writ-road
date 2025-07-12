@@ -49,7 +49,7 @@ class Tour(models.Model):
 
 def image_upload_path(instance, filename):
     if not isinstance(instance, Photo):
-        raise ValueError("this func works only with instance TripPhoto")
+        raise ValueError("this func works only with instance Photo from models.tour")
 
     if instance.type not in dict(instance.PHOTO_TYPE_CHOICES).keys():
         raise ValueError(f"Unavailable type: {instance.type}")
