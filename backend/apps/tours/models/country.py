@@ -38,19 +38,15 @@ class Country(models.Model):
         upload_to=image_upload_path,
         processors=[ResizeToFill(1200, 500)],
         format='JPEG',
-        options={'quality': 60})
-    image = models.ImageField(upload_to=image_upload_path)
-    image_list = ImageSpecField(
-        source="image",
+        options={'quality': 80},
+        help_text=_("Add large image for hero section on detail page (1200x500)")
+    )
+    image_list = ProcessedImageField(
+        upload_to=image_upload_path,
         processors=[ResizeToFill(600, 400)],
         format='JPEG',
-        options={'quality': 60}
-    )
-    image_detail = ImageSpecField(
-        source="image",
-        processors=[ResizeToFill(400, 300)],
-        format='JPEG',
-        options={'quality': 60}
+        options={'quality': 60},
+        help_text=_("Add image for list view (600x400)")
     )
 
     class Meta:

@@ -27,8 +27,8 @@ class CountryListSerializer(serializers.ModelSerializer):
 
 class CountryDetailSerializer(CountryListSerializer):
     image_hero = serializers.SerializerMethodField()
-    image_featured = serializers.SerializerMethodField()
     popular_destinations = serializers.SerializerMethodField()
+    tours = serializers.SerializerMethodField()
 
     class Meta:
         model = Country
@@ -36,13 +36,17 @@ class CountryDetailSerializer(CountryListSerializer):
             "id",
             "name",
             "image_hero",
-            "image_featured",
             "tour_count",
             "capital",
             "language",
             "currency",
             "popular_destinations"
         ]
+
+    def get_tours(self, obj):
+
+        if obj.destinations.all():
+            return [destination for destination in obj.destinations.filter(is_popular=True)][:5]
 
     @staticmethod
     def get_popular_destinations(obj) -> list:
@@ -54,10 +58,4 @@ class CountryDetailSerializer(CountryListSerializer):
     def get_image_hero(obj):
         if obj.image_hero:
             return obj.image_hero.url
-        return None
-
-    @staticmethod
-    def get_image_featured(obj):
-        if obj.image_detail:
-            return obj.image_detail.url
         return None
